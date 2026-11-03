@@ -1,16 +1,16 @@
 package hotel.model;
 
 public class Quarto {
-    private int numero;
-    private String tipo;
+    private final int numero;
+    private final String tipo;
     private double precoDiaria;
-    private boolean disponivel;
+    private final int capacidade;
 
-    public Quarto (int numero, String tipo, double precoDiaria, boolean disponivel){
+    public Quarto (int numero, String tipo, double precoDiaria, int capacidade){
         this.numero = numero;
         this.tipo = tipo;
         this.precoDiaria = precoDiaria;
-        this.disponivel = disponivel;
+        this.capacidade = capacidade;
     }
 
     public int getNumero(){
@@ -21,10 +21,6 @@ public class Quarto {
         return tipo;
     }
 
-    public void setTipo(String tipo){
-        this.tipo = tipo;
-    }
-
     public double getPrecoDiaria() {
         return precoDiaria;
     }
@@ -33,11 +29,18 @@ public class Quarto {
         this.precoDiaria = precoDiaria;
     }
 
-    public boolean isDisponivel() {
-        return disponivel;
+    public int getCapacidade (){
+        return capacidade;
     }
 
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
+    @Override
+    public String toString() {
+        return "Quarto{" +
+                "numero=" + numero +
+                ", tipo='" + tipo + '\'' +
+                ", precoDiaria=" + precoDiaria +
+                ", capacidade=" + capacidade +
+                '}';
     }
+
 }
