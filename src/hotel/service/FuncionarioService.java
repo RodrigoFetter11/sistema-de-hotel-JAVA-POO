@@ -51,7 +51,7 @@ public class FuncionarioService {
         hotel.getFuncionarios().add(funcionario);
     }
 
-        public void listarFuncionario () {
+        public void listarFuncionarios () {
             if (hotel.getFuncionarios().isEmpty()){
                 System.out.println("Nenhum funcionário cadastrado.");
                 return;

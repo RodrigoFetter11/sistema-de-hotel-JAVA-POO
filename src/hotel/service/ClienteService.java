@@ -46,7 +46,7 @@ public class ClienteService {
     }
 
     // listarClientes()
-    public void listarCliente (){
+    public void listarClientes (){
         if (hotel.getClientes().isEmpty()){
             System.out.println("Nenhum cliente cadastrado.");
             return;
