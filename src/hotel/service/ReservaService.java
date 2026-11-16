@@ -1,5 +1,6 @@
 package hotel.service;
 
+import hotel.exception.ReservaInvalidaException;
 import hotel.model.Cliente;
 import hotel.model.Hotel;
 import hotel.model.Quarto;
@@ -13,39 +14,43 @@ public class ReservaService {
 
     private final Hotel hotel;
 
-    public ReservaService (Hotel hotel){
+    public ReservaService(Hotel hotel) {
         this.hotel = hotel;
     }
 
     public void cadastrarReserva(Reserva reserva) {
         if (reserva == null) {
-            return;
+            throw new ReservaInvalidaException("A reserva não pode ser nula.");
         }
 
         Cliente cliente = reserva.getCliente();
         Quarto quarto = reserva.getQuarto();
 
         if (cliente == null || quarto == null) {
-            return;
+            throw new ReservaInvalidaException("O cliente e o quarto são obrigatórios para realizar uma reserva.");
         }
 
-        if (!hotel.getClientes().contains(cliente) || !hotel.getQuartos().contains(quarto)) {
-            return;
+        if (!hotel.getClientes().contains(cliente)) {
+            throw new ReservaInvalidaException("O cliente informado não está cadastrado no hotel.");
         }
 
-        if (reserva.getDataEntrada() == null || reserva.getDataSaida() == null){
-            return;
+        if (!hotel.getQuartos().contains(quarto)) {
+            throw new ReservaInvalidaException("O quarto informado não está cadastrado no hotel.");
+        }
+
+        if (reserva.getDataEntrada() == null || reserva.getDataSaida() == null) {
+            throw new ReservaInvalidaException("As datas de entrada e saída são obrigatórias.");
         }
 
         if (!reserva.getDataSaida().isAfter(reserva.getDataEntrada())) {
-            return;
+            throw new ReservaInvalidaException("A data de saída deve ser posterior à data de entrada.");
         }
 
-        for (Reserva reservaExistente : hotel.getReservas()){
-            if (reservaExistente.getQuarto().getNumero() == quarto.getNumero()){
+        for (Reserva reservaExistente : hotel.getReservas()) {
+            if (reservaExistente.getQuarto().getNumero() == quarto.getNumero()) {
                 if (reserva.getDataEntrada().isBefore(reservaExistente.getDataSaida())
-                        && reserva.getDataSaida().isAfter(reservaExistente.getDataEntrada())){
-                    return;
+                        && reserva.getDataSaida().isAfter(reservaExistente.getDataEntrada())) {
+                    throw new ReservaInvalidaException("O quarto já possui uma reserva para o período informado.");
                 }
             }
         }
@@ -53,11 +58,11 @@ public class ReservaService {
         hotel.getReservas().add(reserva);
     }
 
-    public List<Reserva> buscarReservaPorQuarto (int numero){
+    public List<Reserva> buscarReservaPorQuarto(int numero) {
         List<Reserva> reservasEncontradas = new ArrayList<>();
 
-        for (Reserva reserva : hotel.getReservas()){
-            if (reserva.getQuarto().getNumero() == numero){
+        for (Reserva reserva : hotel.getReservas()) {
+            if (reserva.getQuarto().getNumero() == numero) {
                 reservasEncontradas.add(reserva);
             }
         }
@@ -75,33 +80,33 @@ public class ReservaService {
         }
     }
 
-    public List<Reserva> buscarReservaPorCpf (String cpf){
+    public List<Reserva> buscarReservaPorCpf(String cpf) {
         List<Reserva> reservasEncontradas = new ArrayList<>();
 
-        for (Reserva reserva : hotel.getReservas()){
-            if (reserva.getCliente().getCpf().equals(cpf)){
+        for (Reserva reserva : hotel.getReservas()) {
+            if (reserva.getCliente().getCpf().equals(cpf)) {
                 reservasEncontradas.add(reserva);
             }
         }
         return reservasEncontradas;
     }
 
-    public boolean removerReserva(int numeroQuarto, String cpf, LocalDate dataEntrada){
+    public boolean removerReserva(int numeroQuarto, String cpf, LocalDate dataEntrada) {
         Reserva reservaEncontrada = null;
 
         for (Reserva reserva : hotel.getReservas()) {
             if (reserva.getQuarto().getNumero() == numeroQuarto
                     && reserva.getCliente().getCpf().equals(cpf)
                     && reserva.getDataEntrada().equals(dataEntrada)) {
-                        reservaEncontrada = reserva;
-                        break;
+                reservaEncontrada = reserva;
+                break;
             }
         }
 
-            if (reservaEncontrada != null){
-                hotel.getReservas().remove(reservaEncontrada);
-                return true;
-            }
-            return false;
+        if (reservaEncontrada != null) {
+            hotel.getReservas().remove(reservaEncontrada);
+            return true;
+        }
+        return false;
     }
 }

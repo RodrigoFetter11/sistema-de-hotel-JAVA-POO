@@ -1,5 +1,6 @@
 package hotel.service;
 
+import hotel.exception.FuncionarioInvalidoException;
 import hotel.model.Funcionario;
 import hotel.model.Hotel;
 
@@ -13,38 +14,38 @@ public class FuncionarioService {
         this.hotel = hotel;
     }
 
-    public void cadastrarFuncionario (Funcionario funcionario) {
-        if (funcionario == null){
-            return;
+    public void cadastrarFuncionario(Funcionario funcionario) {
+        if (funcionario == null) {
+            throw new FuncionarioInvalidoException("O funcionário não pode ser nulo.");
         }
 
         if (funcionario.getNome() == null || funcionario.getNome().isBlank()) {
-            return;
+            throw new FuncionarioInvalidoException("O nome do funcionário é obrigatório.");
         }
 
-        if (funcionario.getCpf() == null || !funcionario.getCpf().matches("\\d{11}")){
-            return;
+        if (funcionario.getCpf() == null || !funcionario.getCpf().matches("\\d{11}")) {
+            throw new FuncionarioInvalidoException("O CPF deve conter exatamente 11 dígitos numéricos.");
         }
 
-        if (funcionario.getTelefone() == null || funcionario.getTelefone().isBlank()){
-            return;
+        if (funcionario.getTelefone() == null || funcionario.getTelefone().isBlank()) {
+            throw new FuncionarioInvalidoException("O telefone do funcionário é obrigatório.");
         }
 
-        if (funcionario.getEmail() == null || funcionario.getEmail().isBlank() || !funcionario.getEmail().contains("@")){
-            return;
+        if (funcionario.getEmail() == null || funcionario.getEmail().isBlank() || !funcionario.getEmail().contains("@")) {
+            throw new FuncionarioInvalidoException("Informe um endereço de e-mail válido.");
         }
 
         if (funcionario.getCargo() == null || funcionario.getCargo().isBlank()) {
-            return;
+            throw new FuncionarioInvalidoException("O cargo do funcionário é obrigatório.");
         }
 
         if (funcionario.getSalario() <= 0) {
-            return;
+            throw new FuncionarioInvalidoException("O salário deve ser maior que zero.");
         }
 
-        for (Funcionario funcionarioExistente : hotel.getFuncionarios()){
-            if (funcionarioExistente.getCpf().equals(funcionario.getCpf())){
-                return;
+        for (Funcionario funcionarioExistente : hotel.getFuncionarios()) {
+            if (funcionarioExistente.getCpf().equals(funcionario.getCpf())) {
+                throw new FuncionarioInvalidoException("Já existe um funcionário cadastrado com esse CPF.");
             }
         }
 

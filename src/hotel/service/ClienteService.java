@@ -1,6 +1,7 @@
 
 package hotel.service;
 
+import hotel.exception.ClienteInvalidoException;
 import hotel.model.Cliente;
 import hotel.model.Hotel;
 
@@ -15,30 +16,30 @@ public class ClienteService {
     }
 
     // cadastrarCliente()
-    public void cadastrarCliente (Cliente cliente){
-        if (cliente == null){
-            return;
+    public void cadastrarCliente(Cliente cliente) {
+        if (cliente == null) {
+            throw new ClienteInvalidoException("O cliente não pode ser nulo.");
         }
 
-        if (cliente.getNome() == null || cliente.getNome().isBlank()){
-            return;
+        if (cliente.getNome() == null || cliente.getNome().isBlank()) {
+            throw new ClienteInvalidoException("O nome do cliente é obrigatório.");
         }
 
         if (cliente.getCpf() == null || !cliente.getCpf().matches("\\d{11}")) {
-            return;
+            throw new ClienteInvalidoException("O CPF deve conter exatamente 11 dígitos numéricos.");
         }
 
-        if (cliente.getTelefone() == null || cliente.getTelefone().isBlank()){
-            return;
+        if (cliente.getTelefone() == null || cliente.getTelefone().isBlank()) {
+            throw new ClienteInvalidoException("O telefone do cliente é obrigatório.");
         }
 
-        if (cliente.getEmail() == null || cliente.getEmail().isBlank() || !cliente.getEmail().contains("@")){
-            return;
+        if (cliente.getEmail() == null || cliente.getEmail().isBlank() || !cliente.getEmail().contains("@")) {
+            throw new ClienteInvalidoException("Informe um endereço de e-mail válido.");
         }
 
-        for (Cliente clienteExistente : hotel.getClientes()){
-            if (clienteExistente.getCpf().equals(cliente.getCpf())){
-                return;
+        for (Cliente clienteExistente : hotel.getClientes()) {
+            if (clienteExistente.getCpf().equals(cliente.getCpf())) {
+                throw new ClienteInvalidoException("Já existe um cliente cadastrado com esse CPF.");
             }
         }
 

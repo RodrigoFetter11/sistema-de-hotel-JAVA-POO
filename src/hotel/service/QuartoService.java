@@ -1,5 +1,6 @@
 package hotel.service;
 
+import hotel.exception.QuartoInvalidoException;
 import hotel.model.Cliente;
 import hotel.model.Hotel;
 import hotel.model.Quarto;
@@ -14,31 +15,31 @@ public class QuartoService {
     }
 
 
-    public void cadastrarQuarto (Quarto quarto){
-        if (quarto == null){
-            return;
+    public void cadastrarQuarto(Quarto quarto) {
+        if (quarto == null) {
+            throw new QuartoInvalidoException("O quarto não pode ser nulo.");
         }
 
-        if (quarto.getNumero() <= 0){
-            return;
+        if (quarto.getNumero() <= 0) {
+            throw new QuartoInvalidoException("O número do quarto deve ser maior que zero.");
         }
 
-        for (Quarto quartoExistente : hotel.getQuartos()){
-            if (quarto.getNumero() == quartoExistente.getNumero()){
-                return;
+        for (Quarto quartoExistente : hotel.getQuartos()) {
+            if (quarto.getNumero() == quartoExistente.getNumero()) {
+                throw new QuartoInvalidoException("Já existe um quarto cadastrado com esse número.");
             }
         }
 
-        if (quarto.getTipo() == null || quarto.getTipo().isBlank()){
-            return;
+        if (quarto.getTipo() == null || quarto.getTipo().isBlank()) {
+            throw new QuartoInvalidoException("O tipo do quarto é obrigatório.");
         }
 
-        if (quarto.getPrecoDiaria() <= 0){
-            return;
+        if (quarto.getPrecoDiaria() <= 0) {
+            throw new QuartoInvalidoException("O preço da diária deve ser maior que zero.");
         }
 
-        if (quarto.getCapacidade() <= 0){
-            return;
+        if (quarto.getCapacidade() <= 0) {
+            throw new QuartoInvalidoException("A capacidade do quarto deve ser maior que zero.");
         }
 
         hotel.getQuartos().add(quarto);
