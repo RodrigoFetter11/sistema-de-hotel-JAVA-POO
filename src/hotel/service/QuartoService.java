@@ -4,6 +4,7 @@ import hotel.exception.QuartoInvalidoException;
 import hotel.model.Cliente;
 import hotel.model.Hotel;
 import hotel.model.Quarto;
+import hotel.model.Reserva;
 
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class QuartoService {
             }
         }
 
-        if (quarto.getTipo() == null || quarto.getTipo().isBlank()) {
+        if (quarto.getTipo() == null) {
             throw new QuartoInvalidoException("O tipo do quarto é obrigatório.");
         }
 
@@ -55,15 +56,22 @@ public class QuartoService {
     }
 
 
-    public boolean removerQuarto (int numero){
+    public boolean removerQuarto(int numero) {
         Optional<Quarto> resultado = buscarQuartoPorNumero(numero);
 
-        if (resultado.isPresent()){
-            hotel.getQuartos().remove(resultado.get());
-            return true;
+        if (resultado.isEmpty()) {
+            return false;
         }
 
-        return false;
+        // Verificar se o quarto possui reservas aqui
+        for (Reserva reservaEncontrada : hotel.getReservas()){
+            if (reservaEncontrada.getQuarto() == resultado.get()){
+                return false;
+            }
+        }
+
+        hotel.getQuartos().remove(resultado.get());
+        return true;
     }
 
 

@@ -2,11 +2,11 @@ package hotel.model;
 
 public class Quarto {
     private final int numero;
-    private final String tipo;
+    private final TipoQuarto tipo;
     private double precoDiaria;
     private final int capacidade;
 
-    public Quarto (int numero, String tipo, double precoDiaria, int capacidade){
+    public Quarto (int numero, TipoQuarto tipo, double precoDiaria, int capacidade){
         this.numero = numero;
         this.tipo = tipo;
         this.precoDiaria = precoDiaria;
@@ -17,7 +17,7 @@ public class Quarto {
         return numero;
     }
 
-    public String getTipo(){
+    public TipoQuarto getTipo(){
         return tipo;
     }
 
@@ -37,7 +37,7 @@ public class Quarto {
     public String toString() {
         return "Quarto{" +
                 "numero=" + numero +
-                ", tipo='" + tipo + '\'' +
+                ", tipo=" + tipo +
                 ", precoDiaria=" + precoDiaria +
                 ", capacidade=" + capacidade +
                 '}';

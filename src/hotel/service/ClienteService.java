@@ -4,6 +4,7 @@ package hotel.service;
 import hotel.exception.ClienteInvalidoException;
 import hotel.model.Cliente;
 import hotel.model.Hotel;
+import hotel.model.Reserva;
 
 import java.util.Optional;
 
@@ -75,12 +76,21 @@ public class ClienteService {
     public boolean removerCliente(String cpf) {
         Optional<Cliente> resultado = buscarClientePorCpf(cpf);
 
-        if (resultado.isPresent()) {
-            hotel.getClientes().remove(resultado.get());
-            return true;
+        // Verifica se o cliente existe
+        if (resultado.isEmpty()) {
+            return false;
         }
 
-        return false;
+        // Verifica se o cliente possui reservas
+        for (Reserva reservaEncontrada : hotel.getReservas()) {
+            if (reservaEncontrada.getCliente().equals(resultado.get())) {
+                return false;
+            }
+        }
+
+        // Se não possui reservas, remove o cliente
+        hotel.getClientes().remove(resultado.get());
+        return true;
     }
 
 }
