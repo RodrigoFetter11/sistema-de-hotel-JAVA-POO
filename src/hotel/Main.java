@@ -10,11 +10,10 @@ import hotel.service.FuncionarioService;
 import hotel.service.QuartoService;
 import hotel.service.ReservaService;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
-
 
 import java.util.Scanner;
 
@@ -31,7 +30,7 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
 
-        int opcao;
+        int opcao = -1;
 
         // MENU EXTERNO
         do {
@@ -41,9 +40,32 @@ public class Main {
             System.out.println("3 - Gerenciar quartos");
             System.out.println("4 - Gerenciar reservas");
             System.out.println("0 - Encerrar programa");
-            System.out.print("Escolha uma opção: ");
 
-            opcao = Integer.parseInt(scanner.nextLine());
+
+
+            int tentativas = 0;
+            boolean opcaoValida = false;
+
+            while (tentativas < 3) {
+                System.out.print("Escolha uma opção: ");
+                try {
+                    opcao = Integer.parseInt(scanner.nextLine());
+
+                    opcaoValida = true;
+                    break;
+
+                } catch (NumberFormatException e) {
+                    tentativas++;
+
+                    System.out.println("Opção inválida. Digite um número.");
+                    System.out.println("Tentativas restantes: " + (3 - tentativas));
+                }
+            }
+
+            if (!opcaoValida) {
+                System.out.println("Limite de tentativas atingido. Retornando ao menu principal.");
+                continue;
+            }
 
             switch (opcao) {
 
@@ -79,7 +101,7 @@ public class Main {
     // MENU INTERNO DE CLIENTES
     public static void menuClientes(Scanner scanner, ClienteService clienteService) {
 
-        int opcao;
+        int opcao = -1;
 
         do {
             System.out.println("\n===== MENU DE CLIENTES =====");
@@ -88,9 +110,30 @@ public class Main {
             System.out.println("3 - Buscar cliente por CPF");
             System.out.println("4 - Remover cliente");
             System.out.println("0 - Voltar ao menu principal");
-            System.out.print("Escolha uma opção: ");
 
-            opcao = Integer.parseInt(scanner.nextLine());
+
+            int tentativas = 0;
+            boolean opcaoValida = false;
+
+            while (tentativas < 3) {
+                System.out.print("Escolha uma opção: ");
+
+                try {
+                    opcao = Integer.parseInt(scanner.nextLine());
+                    opcaoValida = true;
+                    break;
+
+                } catch (NumberFormatException e) {
+                    tentativas++;
+                    System.out.println("Opção inválida. Tentativas restantes: "
+                            + (3 - tentativas));
+                }
+            }
+
+            if (!opcaoValida) {
+                System.out.println("Limite de tentativas atingido. Retornando ao menu.");
+                continue;
+            }
 
             switch (opcao) {
 
@@ -177,7 +220,7 @@ public class Main {
             Scanner scanner,
             FuncionarioService funcionarioService) {
 
-        int opcao;
+        int opcao = -1;
 
         do {
             System.out.println("\n===== MENU DE FUNCIONÁRIOS =====");
@@ -186,9 +229,31 @@ public class Main {
             System.out.println("3 - Buscar funcionário por CPF");
             System.out.println("4 - Remover funcionário");
             System.out.println("0 - Voltar ao menu principal");
-            System.out.print("Escolha uma opção: ");
 
-            opcao = Integer.parseInt(scanner.nextLine());
+            int tentativas = 0;
+            boolean opcaoValida = false;
+
+            while (tentativas < 3) {
+                System.out.print("Escolha uma opção: ");
+
+                try {
+                    opcao = Integer.parseInt(scanner.nextLine());
+                    opcaoValida = true;
+                    break;
+
+                } catch (NumberFormatException e) {
+                    tentativas++;
+
+                    System.out.println("Opção inválida. Tentativas restantes: "
+                            + (3 - tentativas));
+                }
+            }
+
+            if (!opcaoValida) {
+                System.out.println("Limite de tentativas atingido. Retornando ao menu.");
+                continue;
+            }
+
 
             switch (opcao) {
                 case 1: {
@@ -209,8 +274,30 @@ public class Main {
                     System.out.print("Digite o cargo: ");
                     String cargo = scanner.nextLine();
 
-                    System.out.print("Digite o salário: ");
-                    double salario = Double.parseDouble(scanner.nextLine());
+                    double salario = 0;
+                    int tentativasSalario = 0;
+                    boolean salarioValido = false;
+
+                    while (tentativasSalario < 3) {
+                        try {
+                            System.out.print("Digite o salário: ");
+                            salario = Double.parseDouble(scanner.nextLine());
+
+                            salarioValido = true;
+                            break;
+
+                        } catch (NumberFormatException e) {
+                            tentativasSalario++;
+
+                            System.out.println("Salário inválido. Tentativas restantes: "
+                                    + (3 - tentativasSalario));
+                        }
+                    }
+
+                    if (!salarioValido) {
+                        System.out.println("Limite de tentativas atingido. Cadastro cancelado.");
+                        break;
+                    }
 
                     Funcionario funcionario = new Funcionario(
                             nome, cpf, telefone, email, cargo, salario
@@ -253,7 +340,7 @@ public class Main {
                 case 4: {
                     System.out.println("\n===== REMOVER FUNCIONÁRIO =====");
 
-                    System.out.println("Digite o CPF: ");
+                    System.out.print("Digite o CPF: ");
                     String cpf = scanner.nextLine();
 
                     boolean removido = funcionarioService.removerFuncionario(cpf);
@@ -281,7 +368,7 @@ public class Main {
             Scanner scanner,
             QuartoService quartoService) {
 
-        int opcao;
+        int opcao = -1;
 
         do {
             System.out.println("\n===== MENU DE QUARTOS =====");
@@ -290,9 +377,30 @@ public class Main {
             System.out.println("3 - Buscar quarto por número");
             System.out.println("4 - Remover quarto");
             System.out.println("0 - Voltar ao menu principal");
-            System.out.print("Escolha uma opção: ");
 
-            opcao = Integer.parseInt(scanner.nextLine());
+            int tentativasMenu = 0;
+            boolean opcaoValida = false;
+
+            while (tentativasMenu < 3) {
+                System.out.print("Escolha uma opção: ");
+
+                try {
+                    opcao = Integer.parseInt(scanner.nextLine());
+                    opcaoValida = true;
+                    break;
+
+                } catch (NumberFormatException e) {
+                    tentativasMenu++;
+
+                    System.out.println("Opção inválida. Tentativas restantes: "
+                            + (3 - tentativasMenu));
+                }
+            }
+
+            if (!opcaoValida) {
+                System.out.println("Limite de tentativas atingido. Retornando ao menu.");
+                continue;
+            }
 
             switch (opcao) {
 
@@ -428,17 +536,39 @@ public class Main {
                 }
 
                 case 2: {
-                    System.out.println("\n===== lista de quartos =====");
+                    System.out.println("\n===== LISTA DE QUARTOS =====");
                     quartoService.listarQuarto();
 
                     break;
                 }
 
                 case 3: {
-                    System.out.println("\n===== PROCURAR QUARTO =====");
-                    System.out.print("Digite o número do quarto");
+                    System.out.println("\n===== BUSCAR QUARTO =====");
 
-                    int numero = Integer.parseInt(scanner.nextLine());
+                    int numero = 0;
+                    int tentativas = 0;
+                    boolean numeroValido = false;
+
+                    while (tentativas < 3) {
+                        try {
+                            System.out.print("Digite o número do quarto: ");
+                            numero = Integer.parseInt(scanner.nextLine());
+
+                            numeroValido = true;
+                            break;
+
+                        } catch (NumberFormatException e) {
+                            tentativas++;
+
+                            System.out.println("Número inválido. Tentativas restantes: "
+                                    + (3 - tentativas));
+                        }
+                    }
+
+                    if (!numeroValido) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
 
                     Optional<Quarto> quartoEncontrado = quartoService.buscarQuartoPorNumero(numero);
 
@@ -446,7 +576,7 @@ public class Main {
                         System.out.println("Quarto encontrado");
                         System.out.println(quartoEncontrado.get());
                     }else {
-                        System.out.println("Esse quarto não existe");
+                        System.out.println("Quarto não encontrado.");
                     }
 
                     break;
@@ -455,15 +585,38 @@ public class Main {
                 case 4: {
                     System.out.println("\n===== REMOVER QUARTO =====");
 
-                    System.out.print("Digite o número do quarto: ");
-                    int numero = Integer.parseInt(scanner.nextLine());
+                    int numero = 0;
+                    int tentativas = 0;
+                    boolean numeroValido = false;
+
+                    while (tentativas < 3) {
+                        try {
+                            System.out.print("Digite o número do quarto: ");
+                            numero = Integer.parseInt(scanner.nextLine());
+
+                            numeroValido = true;
+                            break;
+
+                        } catch (NumberFormatException e) {
+                            tentativas++;
+
+                            System.out.println("Número inválido. Tentativas restantes: "
+                                    + (3 - tentativas));
+                        }
+                    }
+
+                    if (!numeroValido) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
 
                     boolean removido = quartoService.removerQuarto(numero);
 
                     if (removido) {
                         System.out.println("Quarto removido com sucesso");
                     } else {
-                        System.out.println("Não foi possível remover o quarto.");
+                        System.out.println("Não foi possível remover o quarto. "
+                                + "Verifique se ele existe ou possui reservas.");
                     }
 
                     break;
@@ -486,7 +639,7 @@ public class Main {
             ClienteService clienteService,
             QuartoService quartoService) {
 
-        int opcao;
+        int opcao = -1;
 
         do {
             System.out.println("\n===== GERENCIAR RESERVAS =====");
@@ -497,14 +650,34 @@ public class Main {
             System.out.println("5 - Remover reserva");
             System.out.println("0 - Voltar ao menu principal");
 
-            System.out.print("Escolha uma opção: ");
-            opcao = Integer.parseInt(scanner.nextLine());
+            int tentativasReserva = 0;
+            boolean opcaoValida = false;
+
+            while (tentativasReserva < 3) {
+                System.out.print("Escolha uma opção: ");
+
+                try {
+                    opcao = Integer.parseInt(scanner.nextLine());
+                    opcaoValida = true;
+                    break;
+
+                } catch (NumberFormatException e) {
+                    tentativasReserva++;
+
+                    System.out.println("Opção inválida. Tentativas restantes: "
+                            + (3 - tentativasReserva));
+                }
+            }
+
+            if (!opcaoValida) {
+                System.out.println("Limite de tentativas atingido. Retornando ao menu.");
+                continue;
+            }
 
             switch (opcao) {
                 case 1: {
                     System.out.println("\n===== CADASTRO DE RESERVA =====");
 
-                    // Buscar cliente
                     System.out.print("Digite o CPF do cliente: ");
                     String cpf = scanner.nextLine();
 
@@ -520,7 +693,6 @@ public class Main {
 
                     System.out.println("Cliente encontrado: " + cliente);
 
-                    // Buscar quarto
                     int numeroQuarto = 0;
                     int numeroTentativas = 0;
                     boolean numeroValido = false;
@@ -557,18 +729,54 @@ public class Main {
 
                     System.out.println("Quarto encontrado: " + quarto);
 
-                    LocalDate dataEntrada;
-                    LocalDate dataSaida;
+                    LocalDate dataEntrada = null;
+                    LocalDate dataSaida = null;
 
-                    try {
-                        System.out.print("Digite a data de entrada (AAAA-MM-DD): ");
-                        dataEntrada = LocalDate.parse(scanner.nextLine());
+                    int tentativasEntrada = 0;
+                    boolean entradaValida = false;
 
-                        System.out.print("Digite a data de saída (AAAA-MM-DD): ");
-                        dataSaida = LocalDate.parse(scanner.nextLine());
-                    } catch (DateTimeException e){
+                    while (tentativasEntrada < 3) {
+                        try {
+                            System.out.print("Digite a data de entrada (AAAA-MM-DD): ");
+                            dataEntrada = LocalDate.parse(scanner.nextLine());
 
-                        System.out.println("Erro: digite uma data válida no formato AAAA-MM-DD.");
+                            entradaValida = true;
+                            break;
+
+                        } catch (DateTimeParseException e) {
+                            tentativasEntrada++;
+
+                            System.out.println("Data inválida. Tentativas restantes: "
+                                    + (3 - tentativasEntrada));
+                        }
+                    }
+
+                    if (!entradaValida) {
+                        System.out.println("Limite de tentativas atingido. Cadastro cancelado.");
+                        break;
+                    }
+
+                    int tentativasSaida = 0;
+                    boolean saidaValida = false;
+
+                    while (tentativasSaida < 3) {
+                        try {
+                            System.out.print("Digite a data de saída (AAAA-MM-DD): ");
+                            dataSaida = LocalDate.parse(scanner.nextLine());
+
+                            saidaValida = true;
+                            break;
+
+                        } catch (DateTimeParseException e) {
+                            tentativasSaida++;
+
+                            System.out.println("Data inválida. Tentativas restantes: "
+                                    + (3 - tentativasSaida));
+                        }
+                    }
+
+                    if (!saidaValida) {
+                        System.out.println("Limite de tentativas atingido. Cadastro cancelado.");
                         break;
                     }
 
@@ -597,8 +805,32 @@ public class Main {
                 }
 
                 case 3: {
-                    System.out.print("Digite o número do quarto: ");
-                    int numeroQuarto = Integer.parseInt(scanner.nextLine());
+                    System.out.println("\n===== BUSCAR RESERVAS POR NÚMERO DO QUARTO =====");
+
+                    int numeroQuarto = 0;
+                    int tentativas = 0;
+                    boolean numeroValido = false;
+
+                    while (tentativas < 3) {
+                        try {
+                            System.out.print("Digite o número do quarto: ");
+                            numeroQuarto = Integer.parseInt(scanner.nextLine());
+
+                            numeroValido = true;
+                            break;
+
+                        } catch (NumberFormatException e) {
+                            tentativas++;
+
+                            System.out.println("Número inválido. Tentativas restantes: "
+                                    + (3 - tentativas));
+                        }
+                    }
+
+                    if (!numeroValido) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
 
                     List<Reserva> reservasEncontradas =
                             reservaService.buscarReservaPorQuarto(numeroQuarto);
@@ -613,7 +845,10 @@ public class Main {
 
                     break;
                 }
+
                 case 4: {
+                    System.out.println("\n===== BUSCAR RESERVAS POR CPF =====");
+
                     System.out.print("Digite o CPF: ");
                     String cpf = scanner.nextLine();
 
@@ -632,14 +867,60 @@ public class Main {
                 }
 
                 case 5: {
-                    System.out.print("Digite o número do quarto: ");
-                    int numeroQuarto = Integer.parseInt(scanner.nextLine());
+                    System.out.println("\n===== REMOVER RESERVA =====");
+
+                    int numeroQuarto = 0;
+                    int tentativasNumero = 0;
+                    boolean numeroValido = false;
+
+                    while (tentativasNumero < 3) {
+                        try {
+                            System.out.print("Digite o número do quarto: ");
+                            numeroQuarto = Integer.parseInt(scanner.nextLine());
+
+                            numeroValido = true;
+                            break;
+
+                        } catch (NumberFormatException e) {
+                            tentativasNumero++;
+
+                            System.out.println("Número inválido. Tentativas restantes: "
+                                    + (3 - tentativasNumero));
+                        }
+                    }
+
+                    if (!numeroValido) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
 
                     System.out.print("Digite o CPF: ");
                     String cpf = scanner.nextLine();
 
-                    System.out.print("Digite a data de entrada (AAAA-MM-DD): ");
-                    LocalDate dataEntrada = LocalDate.parse(scanner.nextLine());
+                    LocalDate dataEntrada = null;
+                    int tentativasData = 0;
+                    boolean dataValida = false;
+
+                    while (tentativasData < 3) {
+                        try {
+                            System.out.print("Digite a data de entrada (AAAA-MM-DD): ");
+                            dataEntrada = LocalDate.parse(scanner.nextLine());
+
+                            dataValida = true;
+                            break;
+
+                        } catch (DateTimeParseException e) {
+                            tentativasData++;
+
+                            System.out.println("Data inválida. Tentativas restantes: "
+                                    + (3 - tentativasData));
+                        }
+                    }
+
+                    if (!dataValida) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
 
                     boolean removida = reservaService.removerReserva(
                             numeroQuarto, cpf, dataEntrada);
