@@ -1,10 +1,7 @@
 package hotel.service;
 
 import hotel.exception.ReservaInvalidaException;
-import hotel.model.Cliente;
-import hotel.model.Hotel;
-import hotel.model.Quarto;
-import hotel.model.Reserva;
+import hotel.model.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,10 +44,16 @@ public class ReservaService {
         }
 
         for (Reserva reservaExistente : hotel.getReservas()) {
-            if (reservaExistente.getQuarto().getNumero() == quarto.getNumero()) {
+
+            if (reservaExistente.getStatus() != StatusReserva.CANCELADA
+                    && reservaExistente.getQuarto().getNumero() == quarto.getNumero()) {
+
                 if (reserva.getDataEntrada().isBefore(reservaExistente.getDataSaida())
                         && reserva.getDataSaida().isAfter(reservaExistente.getDataEntrada())) {
-                    throw new ReservaInvalidaException("O quarto já possui uma reserva para o período informado.");
+
+                    throw new ReservaInvalidaException(
+                            "O quarto já possui uma reserva para o período informado."
+                    );
                 }
             }
         }
@@ -91,7 +94,7 @@ public class ReservaService {
         return reservasEncontradas;
     }
 
-    public boolean removerReserva(int numeroQuarto, String cpf, LocalDate dataEntrada) {
+    public boolean cancelarReserva(int numeroQuarto, String cpf, LocalDate dataEntrada) {
         Reserva reservaEncontrada = null;
 
         for (Reserva reserva : hotel.getReservas()) {
@@ -104,9 +107,31 @@ public class ReservaService {
         }
 
         if (reservaEncontrada != null) {
-            hotel.getReservas().remove(reservaEncontrada);
+            reservaEncontrada.cancelar();
             return true;
         }
+
+        return false;
+    }
+
+    public boolean confirmarReserva(int numeroQuarto, String cpf, LocalDate dataEntrada) {
+        Reserva reservaEncontrada = null;
+
+        for (Reserva reserva : hotel.getReservas()) {
+            if (reserva.getQuarto().getNumero() == numeroQuarto
+                    && reserva.getCliente().getCpf().equals(cpf)
+                    && reserva.getDataEntrada().equals(dataEntrada)) {
+
+                reservaEncontrada = reserva;
+                break;
+            }
+        }
+
+        if (reservaEncontrada != null) {
+            reservaEncontrada.confirmar();
+            return true;
+        }
+
         return false;
     }
 }

@@ -8,6 +8,7 @@ public class Reserva {
     private Quarto quarto;
     private LocalDate dataEntrada;
     private LocalDate dataSaida;
+    private StatusReserva status;
 
     public Reserva(Cliente cliente,
                    Quarto quarto,
@@ -18,6 +19,7 @@ public class Reserva {
         this.quarto = quarto;
         this.dataEntrada = dataEntrada;
         this.dataSaida = dataSaida;
+        this.status = StatusReserva.PENDENTE;
     }
 
     public Cliente getCliente() {
@@ -44,6 +46,30 @@ public class Reserva {
         this.dataSaida = dataSaida;
     }
 
+    public StatusReserva getStatus() {
+        return status;
+    }
+
+    public void confirmar() {
+        if (this.status != StatusReserva.PENDENTE) {
+            throw new IllegalStateException(
+                    "Somente reservas pendentes podem ser confirmadas."
+            );
+        }
+
+        this.status = StatusReserva.CONFIRMADA;
+    }
+
+    public void cancelar() {
+        if (this.status == StatusReserva.CANCELADA) {
+            throw new IllegalStateException(
+                    "A reserva já está cancelada."
+            );
+        }
+
+        this.status = StatusReserva.CANCELADA;
+    }
+
     @Override
     public String toString() {
         return "Reserva{" +
@@ -51,6 +77,7 @@ public class Reserva {
                 ", quarto=" + quarto.getNumero() +
                 ", entrada=" + dataEntrada +
                 ", saida=" + dataSaida +
+                ", status=" + status +
                 '}';
     }
 }

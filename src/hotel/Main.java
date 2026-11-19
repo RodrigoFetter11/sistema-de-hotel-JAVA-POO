@@ -32,7 +32,7 @@ public class Main {
 
         int opcao = -1;
 
-        // MENU EXTERNO
+
         do {
             System.out.println("\n===== SISTEMA DE HOTEL =====");
             System.out.println("1 - Gerenciar clientes");
@@ -98,7 +98,6 @@ public class Main {
         scanner.close();
     }
 
-    // MENU INTERNO DE CLIENTES
     public static void menuClientes(Scanner scanner, ClienteService clienteService) {
 
         int opcao = -1;
@@ -642,12 +641,13 @@ public class Main {
         int opcao = -1;
 
         do {
-            System.out.println("\n===== GERENCIAR RESERVAS =====");
+            System.out.println("\n===== MENU DE RESERVAS =====");
             System.out.println("1 - Cadastrar reserva");
             System.out.println("2 - Listar reservas");
             System.out.println("3 - Buscar reservas por quarto");
             System.out.println("4 - Buscar reservas por CPF do cliente");
-            System.out.println("5 - Remover reserva");
+            System.out.println("5 - Confirmar reserva");
+            System.out.println("6 - Cancelar reserva");
             System.out.println("0 - Voltar ao menu principal");
 
             int tentativasReserva = 0;
@@ -867,7 +867,7 @@ public class Main {
                 }
 
                 case 5: {
-                    System.out.println("\n===== REMOVER RESERVA =====");
+                    System.out.println("\n===== CONFIRMAR RESERVA =====");
 
                     int numeroQuarto = 0;
                     int tentativasNumero = 0;
@@ -922,13 +922,91 @@ public class Main {
                         break;
                     }
 
-                    boolean removida = reservaService.removerReserva(
-                            numeroQuarto, cpf, dataEntrada);
+                    try {
+                        boolean confirmada = reservaService.confirmarReserva(
+                                numeroQuarto, cpf, dataEntrada);
 
-                    if (removida){
-                        System.out.println("Reserva removida com sucesso!");
-                    } else {
-                        System.out.println("Reserva não encontrada.");
+                        if (confirmada) {
+                            System.out.println("Reserva confirmada com sucesso!");
+                        } else {
+                            System.out.println("Reserva não encontrada.");
+                        }
+
+                    } catch (IllegalStateException e) {
+                        System.out.println("Não foi possível confirmar: " + e.getMessage());
+                    }
+
+                    break;
+                }
+
+                case 6: {
+                    System.out.println("\n===== CANCELAR RESERVA =====");
+
+                    int numeroQuarto = 0;
+                    int tentativasNumero = 0;
+                    boolean numeroValido = false;
+
+                    while (tentativasNumero < 3) {
+                        try {
+                            System.out.print("Digite o número do quarto: ");
+                            numeroQuarto = Integer.parseInt(scanner.nextLine());
+
+                            numeroValido = true;
+                            break;
+
+                        } catch (NumberFormatException e) {
+                            tentativasNumero++;
+
+                            System.out.println("Número inválido. Tentativas restantes: "
+                                    + (3 - tentativasNumero));
+                        }
+                    }
+
+                    if (!numeroValido) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
+
+                    System.out.print("Digite o CPF: ");
+                    String cpf = scanner.nextLine();
+
+                    LocalDate dataEntrada = null;
+                    int tentativasData = 0;
+                    boolean dataValida = false;
+
+                    while (tentativasData < 3) {
+                        try {
+                            System.out.print("Digite a data de entrada (AAAA-MM-DD): ");
+                            dataEntrada = LocalDate.parse(scanner.nextLine());
+
+                            dataValida = true;
+                            break;
+
+                        } catch (DateTimeParseException e) {
+                            tentativasData++;
+
+                            System.out.println("Data inválida. Tentativas restantes: "
+                                    + (3 - tentativasData));
+                        }
+                    }
+
+                    if (!dataValida) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
+
+                    try {
+                        boolean cancelada = reservaService.cancelarReserva(
+                                numeroQuarto, cpf, dataEntrada);
+
+                        if (cancelada) {
+                            System.out.println("Reserva cancelada com sucesso!");
+                        } else {
+                            System.out.println("Reserva não encontrada.");
+                        }
+
+                    } catch (IllegalStateException e) {
+                        System.out.println("Não foi possível cancelar: " + e.getMessage());
                     }
 
                     break;
