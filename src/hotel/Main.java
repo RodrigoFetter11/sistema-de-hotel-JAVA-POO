@@ -208,6 +208,7 @@ public class Main {
                     System.out.println("Voltando ao menu principal...");
                     break;
 
+
                 default:
                     System.out.println("Opção inválida.");
             }
@@ -255,8 +256,29 @@ public class Main {
 
 
             switch (opcao) {
+
                 case 1: {
                     System.out.println("\n===== CADASTRO DE FUNCIONÁRIO =====");
+
+                    System.out.println("Escolha o tipo de funcionário:");
+                    System.out.println("1 - Recepcionista");
+                    System.out.println("2 - Gerente");
+                    System.out.println("3 - Camareira");
+
+                    System.out.print("Digite a opção: ");
+                    int tipoFuncionario;
+
+                    try {
+                        tipoFuncionario = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Opção inválida. Cadastro cancelado.");
+                        break;
+                    }
+
+                    if (tipoFuncionario < 1 || tipoFuncionario > 3) {
+                        System.out.println("Tipo de funcionário inválido. Cadastro cancelado.");
+                        break;
+                    }
 
                     System.out.print("Digite o nome: ");
                     String nome = scanner.nextLine();
@@ -269,9 +291,6 @@ public class Main {
 
                     System.out.print("Digite o e-mail: ");
                     String email = scanner.nextLine();
-
-                    System.out.print("Digite o cargo: ");
-                    String cargo = scanner.nextLine();
 
                     double salario = 0;
                     int tentativasSalario = 0;
@@ -298,9 +317,27 @@ public class Main {
                         break;
                     }
 
-                    Funcionario funcionario = new Funcionario(
-                            nome, cpf, telefone, email, cargo, salario
-                    );
+                    Funcionario funcionario = null;
+
+                    switch (tipoFuncionario) {
+                        case 1:
+                            funcionario = new Recepcionista(
+                                    nome, cpf, telefone, email, "Recepcionista", salario
+                            );
+                            break;
+
+                        case 2:
+                            funcionario = new Gerente(
+                                    nome, cpf, telefone, email, "Gerente", salario
+                            );
+                            break;
+
+                        case 3:
+                            funcionario = new Camareira(
+                                    nome, cpf, telefone, email, "Camareira", salario
+                            );
+                            break;
+                    }
 
                     try {
                         funcionarioService.cadastrarFuncionario(funcionario);
@@ -311,6 +348,7 @@ public class Main {
 
                     break;
                 }
+
 
                 case 2: {
                     System.out.println("\n===== LISTA DE FUNCIONÁRIOS =====");
@@ -363,6 +401,7 @@ public class Main {
 
         } while (opcao != 0);
     }
+
     public static void menuQuartos(
             Scanner scanner,
             QuartoService quartoService) {

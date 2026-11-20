@@ -1,6 +1,6 @@
 package hotel.model;
 
-public class Funcionario extends Pessoa{
+public abstract class Funcionario extends Pessoa{
     private String cargo;
     private Double salario;
 
@@ -24,5 +24,14 @@ public class Funcionario extends Pessoa{
 
     public void setSalario(double salario) {
         this.salario = salario;
+    }
+
+    public abstract void executarTarefa();
+
+    @Override
+    public String toString() {
+        return super.toString()
+                + ", cargo='" + cargo + '\''
+                + ", salario='" + salario + "'}";
     }
 }

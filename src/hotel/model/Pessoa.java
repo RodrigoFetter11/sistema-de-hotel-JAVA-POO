@@ -52,7 +52,6 @@ public abstract class Pessoa {
                 "nome='" + nome + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", telefone='" + telefone + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+                ", email='" + email + '\'';
     }
 }
