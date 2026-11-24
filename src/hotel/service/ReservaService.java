@@ -80,6 +80,8 @@ public class ReservaService {
 
         for (Reserva reserva : hotel.getReservas()) {
             System.out.println(reserva);
+            System.out.println("Valor total: " + reserva.calcularValorTotal());
+            System.out.println("---------------------------");
         }
     }
 

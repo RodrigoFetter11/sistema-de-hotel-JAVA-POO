@@ -1,12 +1,14 @@
 package hotel.model;
 
+import java.math.BigDecimal;
+
 public class Quarto {
     private final int numero;
     private final TipoQuarto tipo;
-    private double precoDiaria;
+    private BigDecimal precoDiaria;
     private final int capacidade;
 
-    public Quarto (int numero, TipoQuarto tipo, double precoDiaria, int capacidade){
+    public Quarto (int numero, TipoQuarto tipo, BigDecimal precoDiaria, int capacidade){
         this.numero = numero;
         this.tipo = tipo;
         this.precoDiaria = precoDiaria;
@@ -21,11 +23,11 @@ public class Quarto {
         return tipo;
     }
 
-    public double getPrecoDiaria() {
+    public BigDecimal getPrecoDiaria() {
         return precoDiaria;
     }
 
-    public void setPrecoDiaria(double precoDiaria) {
+    public void setPrecoDiaria(BigDecimal precoDiaria) {
         this.precoDiaria = precoDiaria;
     }
 

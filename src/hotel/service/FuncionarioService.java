@@ -4,6 +4,7 @@ import hotel.exception.FuncionarioInvalidoException;
 import hotel.model.Funcionario;
 import hotel.model.Hotel;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class FuncionarioService {
@@ -39,7 +40,11 @@ public class FuncionarioService {
             throw new FuncionarioInvalidoException("O cargo do funcionário é obrigatório.");
         }
 
-        if (funcionario.getSalario() <= 0) {
+        if (funcionario.getSalario() == null) {
+            throw new FuncionarioInvalidoException("O salário é obrigatório.");
+        }
+
+        if (funcionario.getSalario().compareTo(BigDecimal.ZERO) <= 0) {
             throw new FuncionarioInvalidoException("O salário deve ser maior que zero.");
         }
 

@@ -10,6 +10,7 @@ import hotel.service.FuncionarioService;
 import hotel.service.QuartoService;
 import hotel.service.ReservaService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -39,6 +40,7 @@ public class Main {
             System.out.println("2 - Gerenciar funcionários");
             System.out.println("3 - Gerenciar quartos");
             System.out.println("4 - Gerenciar reservas");
+            System.out.println("9 - Testar pagamentos");
             System.out.println("0 - Encerrar programa");
 
 
@@ -83,6 +85,10 @@ public class Main {
 
                 case 4:
                     menuReservas(scanner, reservaService, clienteService, quartoService);
+                    break;
+
+                case 9:
+                    testarPagamentos();
                     break;
 
                 case 0:
@@ -292,14 +298,16 @@ public class Main {
                     System.out.print("Digite o e-mail: ");
                     String email = scanner.nextLine();
 
-                    double salario = 0;
+                    BigDecimal salario = null;
                     int tentativasSalario = 0;
                     boolean salarioValido = false;
 
                     while (tentativasSalario < 3) {
                         try {
                             System.out.print("Digite o salário: ");
-                            salario = Double.parseDouble(scanner.nextLine());
+                            String entrada = scanner.nextLine();
+
+                            salario = new BigDecimal(entrada);
 
                             salarioValido = true;
                             break;
@@ -511,14 +519,16 @@ public class Main {
                         break;
                     }
 
-                    double precoDiaria = 0;
+                    BigDecimal precoDiaria = null;
                     int tentativas = 0;
                     boolean precoValido = false;
 
                     while (tentativas < 3) {
                         try {
                             System.out.print("Digite o preço da diária: ");
-                            precoDiaria = Double.parseDouble(scanner.nextLine());
+                            String entrada = scanner.nextLine();
+
+                            precoDiaria = new BigDecimal(entrada);
 
                             precoValido = true;
                             break;
@@ -1061,4 +1071,25 @@ public class Main {
 
         } while (opcao != 0);
     }
+
+    public static void testarPagamentos() {
+        PagamentoPix pix = new PagamentoPix();
+
+        pix.exibirMensagem();
+        processarPagamento(pix, 150.00);
+
+        processarPagamento(new PagamentoCartao(), 200.0);
+        processarPagamento(new PagamentoDinheiro(), 100.0);
+
+        FormaPagamento.exibirTiposPagamento();
+
+    }
+
+    public static void processarPagamento(
+            FormaPagamento formaPagamento,
+            double valor
+    ) {
+        formaPagamento.pagar(valor);
+    }
+
 }

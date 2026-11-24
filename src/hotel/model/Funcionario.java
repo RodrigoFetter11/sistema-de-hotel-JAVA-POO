@@ -1,10 +1,12 @@
 package hotel.model;
 
+import java.math.BigDecimal;
+
 public abstract class Funcionario extends Pessoa{
     private String cargo;
-    private Double salario;
+    private BigDecimal salario;
 
-    public Funcionario(String nome, String cpf, String telefone, String email, String cargo, Double salario) {
+    public Funcionario(String nome, String cpf, String telefone, String email, String cargo, BigDecimal salario) {
         super(nome, cpf, telefone, email);
         this.cargo = cargo;
         this.salario = salario;
@@ -18,11 +20,11 @@ public abstract class Funcionario extends Pessoa{
         this.cargo = cargo;
     }
 
-    public double getSalario() {
+    public BigDecimal getSalario() {
         return salario;
     }
 
-    public void setSalario(double salario) {
+    public void setSalario(BigDecimal salario) {
         this.salario = salario;
     }
 

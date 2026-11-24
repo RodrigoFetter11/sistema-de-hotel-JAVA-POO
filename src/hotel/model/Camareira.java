@@ -1,9 +1,11 @@
 package hotel.model;
 
+import java.math.BigDecimal;
+
 public class Camareira extends Funcionario {
 
     public Camareira(String nome, String cpf, String telefone,
-                     String email, String cargo, Double salario) {
+                     String email, String cargo, BigDecimal salario) {
         super(nome, cpf, telefone, email, cargo, salario);
     }
 

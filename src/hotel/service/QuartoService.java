@@ -6,6 +6,7 @@ import hotel.model.Hotel;
 import hotel.model.Quarto;
 import hotel.model.Reserva;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 public class QuartoService {
@@ -35,7 +36,11 @@ public class QuartoService {
             throw new QuartoInvalidoException("O tipo do quarto é obrigatório.");
         }
 
-        if (quarto.getPrecoDiaria() <= 0) {
+        if (quarto.getPrecoDiaria() == null) {
+            throw new QuartoInvalidoException("O preço da diária é obrigatório.");
+        }
+
+        if (quarto.getPrecoDiaria().compareTo(BigDecimal.ZERO) <= 0) {
             throw new QuartoInvalidoException("O preço da diária deve ser maior que zero.");
         }
 
@@ -55,7 +60,6 @@ public class QuartoService {
         return Optional.empty();
     }
 
-
     public boolean removerQuarto(int numero) {
         Optional<Quarto> resultado = buscarQuartoPorNumero(numero);
 
@@ -63,7 +67,6 @@ public class QuartoService {
             return false;
         }
 
-        // Verificar se o quarto possui reservas aqui
         for (Reserva reservaEncontrada : hotel.getReservas()){
             if (reservaEncontrada.getQuarto() == resultado.get()){
                 return false;

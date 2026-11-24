@@ -1,6 +1,8 @@
 package hotel.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Reserva {
 
@@ -68,6 +70,14 @@ public class Reserva {
         }
 
         this.status = StatusReserva.CANCELADA;
+    }
+
+    public long calcularDiarias (){
+         return ChronoUnit.DAYS.between(dataEntrada, dataSaida);
+    }
+
+    public BigDecimal calcularValorTotal(){
+        return getQuarto().getPrecoDiaria().multiply(BigDecimal.valueOf(calcularDiarias()));
     }
 
     @Override
