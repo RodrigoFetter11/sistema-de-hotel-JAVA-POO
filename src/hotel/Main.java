@@ -5,10 +5,7 @@ import hotel.exception.FuncionarioInvalidoException;
 import hotel.exception.QuartoInvalidoException;
 import hotel.exception.ReservaInvalidaException;
 import hotel.model.*;
-import hotel.service.ClienteService;
-import hotel.service.FuncionarioService;
-import hotel.service.QuartoService;
-import hotel.service.ReservaService;
+import hotel.service.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,6 +25,7 @@ public class Main {
         FuncionarioService funcionarioService = new FuncionarioService(hotel);
         QuartoService quartoService = new QuartoService(hotel);
         ReservaService reservaService = new ReservaService(hotel);
+        PagamentoService pagamentoService = new PagamentoService(hotel);
 
         Scanner scanner = new Scanner(System.in);
 
@@ -40,7 +38,6 @@ public class Main {
             System.out.println("2 - Gerenciar funcionários");
             System.out.println("3 - Gerenciar quartos");
             System.out.println("4 - Gerenciar reservas");
-            System.out.println("9 - Testar pagamentos");
             System.out.println("0 - Encerrar programa");
 
 
@@ -84,11 +81,7 @@ public class Main {
                     break;
 
                 case 4:
-                    menuReservas(scanner, reservaService, clienteService, quartoService);
-                    break;
-
-                case 9:
-                    testarPagamentos();
+                    menuReservas(scanner, reservaService, clienteService, quartoService, pagamentoService);
                     break;
 
                 case 0:
@@ -685,7 +678,8 @@ public class Main {
             Scanner scanner,
             ReservaService reservaService,
             ClienteService clienteService,
-            QuartoService quartoService) {
+            QuartoService quartoService,
+            PagamentoService pagamentoService) {
 
         int opcao = -1;
 
@@ -697,6 +691,7 @@ public class Main {
             System.out.println("4 - Buscar reservas por CPF do cliente");
             System.out.println("5 - Confirmar reserva");
             System.out.println("6 - Cancelar reserva");
+            System.out.println("7 -  Processar pagamento");
             System.out.println("0 - Voltar ao menu principal");
 
             int tentativasReserva = 0;
@@ -1061,6 +1056,143 @@ public class Main {
                     break;
                 }
 
+                case 7: {
+                    System.out.println("\n===== PROCESSAR PAGAMENTO =====");
+                    int numeroQuarto = 0;
+                    int tentativasNumero = 0;
+                    boolean numeroValido = false;
+
+                    while (tentativasNumero < 3) {
+                        try {
+                            System.out.print("Digite o número do quarto: ");
+                            numeroQuarto = Integer.parseInt(scanner.nextLine());
+
+                            numeroValido = true;
+                            break;
+
+                        } catch (NumberFormatException e) {
+                            tentativasNumero++;
+
+                            System.out.println("Número inválido. Tentativas restantes: "
+                                    + (3 - tentativasNumero));
+                        }
+                    }
+
+                    if (!numeroValido) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
+
+                    System.out.print("Digite o CPF: ");
+                    String cpf = scanner.nextLine();
+
+                    LocalDate dataEntrada = null;
+                    int tentativasData = 0;
+                    boolean dataValida = false;
+
+                    while (tentativasData < 3) {
+                        try {
+                            System.out.print("Digite a data de entrada (AAAA-MM-DD): ");
+                            dataEntrada = LocalDate.parse(scanner.nextLine());
+
+                            dataValida = true;
+                            break;
+
+                        } catch (DateTimeParseException e) {
+                            tentativasData++;
+
+                            System.out.println("Data inválida. Tentativas restantes: "
+                                    + (3 - tentativasData));
+                        }
+                    }
+
+                    if (!dataValida) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
+
+                    Optional<Reserva> reservaEncontrada =
+                            reservaService.buscarReservaPorIdentificacao(
+                                    numeroQuarto, cpf, dataEntrada
+                            );
+
+                    if (reservaEncontrada.isEmpty()) {
+                        System.out.println("Reserva não encontrada.");
+                        break;
+                    }
+
+                    Reserva reserva = reservaEncontrada.get();
+
+                    System.out.println("Reserva encontrada: " + reserva);
+                    System.out.println("Valor total: " + reserva.calcularValorTotal());
+
+                    System.out.println("\n===== FORMAS DE PAGAMENTO =====");
+                    System.out.println("1 - Pix");
+                    System.out.println("2 - Cartão");
+                    System.out.println("3 - Dinheiro");
+
+                    int opcaoPagamento = 0;
+                    int tentativasPagamento = 0;
+                    FormaPagamento formaPagamento = null;
+                    boolean pagamentoValido = false;
+
+                    while (tentativasPagamento < 3) {
+                        try {
+                            System.out.print("Escolha a forma de pagamento: ");
+                            opcaoPagamento = Integer.parseInt(scanner.nextLine());
+
+                            if (opcaoPagamento < 1 || opcaoPagamento > 4) {
+                                tentativasPagamento++;
+                                System.out.println("Opção inválida. Tentativas restantes: "
+                                        + (3 - tentativasPagamento));
+                                continue;
+                            }
+
+                            pagamentoValido = true;
+                            break;
+
+                        } catch (NumberFormatException e) {
+                            tentativasPagamento++;
+
+                            System.out.println("Entrada inválida. Tentativas restantes: "
+                                    + (3 - tentativasPagamento));
+                        }
+                    }
+
+                    if (!pagamentoValido) {
+                        System.out.println("Limite de tentativas atingido. Operação cancelada.");
+                        break;
+                    }
+
+                    switch (opcaoPagamento) {
+                        case 1:
+                            formaPagamento = new PagamentoPix();
+                            break;
+
+                        case 2:
+                            formaPagamento = new PagamentoCartao();
+                            break;
+
+                        case 3:
+                            formaPagamento = new PagamentoDinheiro();
+                            break;
+
+                        default:
+                            System.out.println("Forma de pagamento inválida.");
+                            break;
+                    }
+
+                    try {
+                        pagamentoService.processarPagamento(reserva, formaPagamento);
+                        System.out.println("Pagamento processado com sucesso!");
+
+                    } catch (IllegalArgumentException | IllegalStateException e) {
+                        System.out.println("Erro ao processar pagamento: " + e.getMessage());
+                    }
+
+                    break;
+                }
+
                 case 0:
                     System.out.println("Voltando ao menu principal...");
                     break;
@@ -1070,26 +1202,6 @@ public class Main {
             }
 
         } while (opcao != 0);
-    }
-
-    public static void testarPagamentos() {
-        PagamentoPix pix = new PagamentoPix();
-
-        pix.exibirMensagem();
-        processarPagamento(pix, 150.00);
-
-        processarPagamento(new PagamentoCartao(), 200.0);
-        processarPagamento(new PagamentoDinheiro(), 100.0);
-
-        FormaPagamento.exibirTiposPagamento();
-
-    }
-
-    public static void processarPagamento(
-            FormaPagamento formaPagamento,
-            double valor
-    ) {
-        formaPagamento.pagar(valor);
     }
 
 }

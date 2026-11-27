@@ -6,6 +6,7 @@ import hotel.model.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ReservaService {
 
@@ -96,44 +97,43 @@ public class ReservaService {
         return reservasEncontradas;
     }
 
-    public boolean cancelarReserva(int numeroQuarto, String cpf, LocalDate dataEntrada) {
-        Reserva reservaEncontrada = null;
+    private Reserva buscarReserva(int numeroQuarto, String cpf, LocalDate dataEntrada){
 
         for (Reserva reserva : hotel.getReservas()) {
             if (reserva.getQuarto().getNumero() == numeroQuarto
                     && reserva.getCliente().getCpf().equals(cpf)
                     && reserva.getDataEntrada().equals(dataEntrada)) {
-                reservaEncontrada = reserva;
-                break;
+                    return reserva;
             }
         }
-
-        if (reservaEncontrada != null) {
-            reservaEncontrada.cancelar();
-            return true;
-        }
-
-        return false;
+        return null;
     }
 
     public boolean confirmarReserva(int numeroQuarto, String cpf, LocalDate dataEntrada) {
-        Reserva reservaEncontrada = null;
+        Reserva reservaEncontrada = buscarReserva(numeroQuarto, cpf, dataEntrada);
 
-        for (Reserva reserva : hotel.getReservas()) {
-            if (reserva.getQuarto().getNumero() == numeroQuarto
-                    && reserva.getCliente().getCpf().equals(cpf)
-                    && reserva.getDataEntrada().equals(dataEntrada)) {
-
-                reservaEncontrada = reserva;
-                break;
-            }
+        if (reservaEncontrada == null){
+            return false;
         }
 
-        if (reservaEncontrada != null) {
-            reservaEncontrada.confirmar();
-            return true;
+        reservaEncontrada.confirmar();
+        return true;
+    }
+
+    public boolean cancelarReserva(int numeroQuarto, String cpf, LocalDate dataEntrada) {
+        Reserva reservaEncontrada = buscarReserva(numeroQuarto, cpf, dataEntrada);
+
+        if (reservaEncontrada == null){
+            return false;
         }
 
-        return false;
+        reservaEncontrada.cancelar();
+        return true;
+    }
+
+    public Optional<Reserva> buscarReservaPorIdentificacao(int numeroQuarto, String cpf, LocalDate dataEntrada) {
+        return Optional.ofNullable(
+                buscarReserva(numeroQuarto, cpf, dataEntrada)
+        );
     }
 }

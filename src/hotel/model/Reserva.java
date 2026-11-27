@@ -11,6 +11,7 @@ public class Reserva {
     private LocalDate dataEntrada;
     private LocalDate dataSaida;
     private StatusReserva status;
+    private Pagamento pagamento;
 
     public Reserva(Cliente cliente,
                    Quarto quarto,
@@ -78,6 +79,22 @@ public class Reserva {
 
     public BigDecimal calcularValorTotal(){
         return getQuarto().getPrecoDiaria().multiply(BigDecimal.valueOf(calcularDiarias()));
+    }
+
+    public Pagamento getPagamento() {
+        return pagamento;
+    }
+
+    public void adicionarPagamento(Pagamento pagamento) {
+        if (pagamento == null || pagamento.getReserva() != this) {
+            throw new IllegalArgumentException("O pagamento não pertence a esta reserva.");
+        }
+
+        if (this.pagamento != null) {
+            throw new IllegalStateException("Esta reserva já possui um pagamento.");
+        }
+
+        this.pagamento = pagamento;
     }
 
     @Override

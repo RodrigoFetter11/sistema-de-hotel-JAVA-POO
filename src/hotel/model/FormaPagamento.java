@@ -1,8 +1,10 @@
 package hotel.model;
 
+import java.math.BigDecimal;
+
 public interface FormaPagamento {
 
-    void pagar(double valor);
+    void pagar(BigDecimal valor);
 
     default void exibirMensagem() {
         System.out.println("Processando pagamento...");
